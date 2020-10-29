@@ -24,6 +24,7 @@ import org.cache2k.Cache;
 import org.cache2k.CacheManager;
 import org.cache2k.core.api.HealthInfoElement;
 import org.cache2k.core.api.InternalCache;
+import org.cache2k.spi.Cache2kCoreProviderFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -87,7 +88,7 @@ public class ManagerMXBeanImpl implements CacheManagerMXBean {
   }
 
   @Override
-  public String getVersion() { return CacheManager.PROVIDER.getVersion(); }
+  public String getVersion() { return Cache2kCoreProviderFactory.getProvider().getVersion(); }
 
   @Override
   public String getBuildNumber() { return "not used"; }

@@ -30,6 +30,7 @@ import org.cache2k.core.spi.CacheLifeCycleListener;
 import org.cache2k.core.spi.CacheManagerLifeCycleListener;
 import org.cache2k.core.log.Log;
 import org.cache2k.spi.Cache2kCoreProvider;
+import org.cache2k.spi.Cache2kCoreProviderFactory;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -51,7 +52,7 @@ import java.util.concurrent.ExecutionException;
 @SuppressWarnings("WeakerAccess")
 public class CacheManagerImpl extends CacheManager {
 
-  public static final Cache2kCoreProvider PROVIDER = CacheManager.PROVIDER;
+
 
   private static final Iterable<CacheLifeCycleListener> CACHE_LIFE_CYCLE_LISTENERS =
     constructAllServiceImplementations(CacheLifeCycleListener.class);
@@ -307,7 +308,8 @@ public class CacheManagerImpl extends CacheManager {
     } catch (Throwable t) {
       suppressedExceptions.add(t);
     }
-    ((Cache2kCoreProviderImpl) PROVIDER).removeManager(this);
+    // TODO: Check cast since OSGI will allow own implementations of the provider.
+    ((Cache2kCoreProviderImpl) Cache2kCoreProviderFactory.getProvider()).removeManager(this);
     synchronized (lock) {
       for (Cache c : cacheNames.values()) {
         log.warn("unable to close cache: " + c.getName());

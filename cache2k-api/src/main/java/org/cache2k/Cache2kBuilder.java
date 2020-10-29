@@ -40,6 +40,7 @@ import org.cache2k.integration.LoadDetail;
 import org.cache2k.io.ResiliencePolicy;
 import org.cache2k.io.CacheLoaderException;
 import org.cache2k.processor.MutableCacheEntry;
+import org.cache2k.spi.Cache2kCoreProviderFactory;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -166,7 +167,7 @@ public class Cache2kBuilder<K, V> {
       if (manager == null) {
         manager = CacheManager.getInstance();
       }
-      config = CacheManager.PROVIDER.getDefaultConfiguration(manager);
+      config = Cache2kCoreProviderFactory.getProvider().getDefaultConfiguration(manager);
       if (keyType != null) {
         config.setKeyType(keyType);
       }
@@ -994,7 +995,7 @@ public class Cache2kBuilder<K, V> {
    *         not present
    */
   public final Cache<K, V> build() {
-    return CacheManager.PROVIDER.createCache(manager, config());
+    return Cache2kCoreProviderFactory.getProvider().createCache(manager, config());
   }
 
 }

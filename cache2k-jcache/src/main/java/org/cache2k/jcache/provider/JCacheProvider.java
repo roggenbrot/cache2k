@@ -9,9 +9,9 @@ package org.cache2k.jcache.provider;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,8 +21,7 @@ package org.cache2k.jcache.provider;
  */
 
 import org.cache2k.core.Cache2kCoreProviderImpl;
-import org.cache2k.spi.Cache2kCoreProvider;
-import org.cache2k.core.SingleProviderResolver;
+import org.cache2k.spi.Cache2kCoreProviderFactory;
 
 import javax.cache.CacheManager;
 import javax.cache.configuration.OptionalFeature;
@@ -47,13 +46,14 @@ import java.util.WeakHashMap;
  */
 public class JCacheProvider implements CachingProvider {
 
-  private final Cache2kCoreProvider forwardProvider = org.cache2k.CacheManager.PROVIDER;
+
 
   private final Map<ClassLoader, Map<URI, JCacheManagerAdapter>> classLoader2uri2cache =
       new WeakHashMap<ClassLoader, Map<URI, JCacheManagerAdapter>>();
 
   private Object getLockObject() {
-    return ((Cache2kCoreProviderImpl) forwardProvider).getLockObject();
+    // TODO: Check cast since OSGI will allow own implementations of provider
+    return ((Cache2kCoreProviderImpl) Cache2kCoreProviderFactory.getProvider()).getLockObject();
   }
 
   public URI name2Uri(String name) {
@@ -95,7 +95,7 @@ public class JCacheProvider implements CachingProvider {
       }
       cm = new JCacheManagerAdapter(
           this,
-          forwardProvider.getManager(cl, uri2Name(uri)));
+              Cache2kCoreProviderFactory.getProvider().getManager(cl, uri2Name(uri)));
        if (p != null && !p.isEmpty()) {
         Properties managerProperties = cm.getProperties();
         for (Map.Entry e : p.entrySet()) {
@@ -116,7 +116,7 @@ public class JCacheProvider implements CachingProvider {
 
   @Override
   public URI getDefaultURI() {
-    String defaultName = forwardProvider.getDefaultManagerName(getDefaultClassLoader());
+    String defaultName = Cache2kCoreProviderFactory.getProvider().getDefaultManagerName(getDefaultClassLoader());
     URI defaultUri = name2Uri(defaultName);
     return defaultUri;
   }
@@ -138,17 +138,17 @@ public class JCacheProvider implements CachingProvider {
 
   @Override
   public void close() {
-    forwardProvider.close();
+    Cache2kCoreProviderFactory.getProvider().close();
   }
 
   @Override
   public void close(ClassLoader cl) {
-    forwardProvider.close(cl);
+    Cache2kCoreProviderFactory.getProvider().close(cl);
   }
 
   @Override
   public void close(URI uri, ClassLoader cl) {
-    forwardProvider.close(cl, uri2Name(uri));
+      Cache2kCoreProviderFactory.getProvider().close(cl, uri2Name(uri));
   }
 
   @Override

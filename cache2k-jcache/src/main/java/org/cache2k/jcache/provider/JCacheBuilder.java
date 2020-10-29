@@ -9,9 +9,9 @@ package org.cache2k.jcache.provider;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -25,7 +25,6 @@ import org.cache2k.configuration.Cache2kConfiguration;
 import org.cache2k.configuration.CacheType;
 import org.cache2k.configuration.CustomizationReferenceSupplier;
 import org.cache2k.core.Cache2kCoreProviderImpl;
-import org.cache2k.core.CacheManagerImpl;
 import org.cache2k.core.InternalCache2kBuilder;
 import org.cache2k.event.CacheClosedListener;
 import org.cache2k.io.AdvancedCacheLoader;
@@ -37,22 +36,15 @@ import org.cache2k.jcache.ExtendedMutableConfiguration;
 import org.cache2k.jcache.JCacheConfiguration;
 import org.cache2k.jcache.provider.event.EventHandling;
 import org.cache2k.jcache.provider.event.EventHandlingImpl;
-import org.cache2k.jcache.provider.generic.storeByValueSimulation.CopyCacheProxy;
-import org.cache2k.jcache.provider.generic.storeByValueSimulation.ObjectCopyFactory;
-import org.cache2k.jcache.provider.generic.storeByValueSimulation.ObjectTransformer;
-import org.cache2k.jcache.provider.generic.storeByValueSimulation.RuntimeCopyTransformer;
-import org.cache2k.jcache.provider.generic.storeByValueSimulation.SimpleObjectCopyFactory;
+import org.cache2k.jcache.provider.generic.storeByValueSimulation.*;
+import org.cache2k.spi.Cache2kCoreProviderFactory;
 
 import javax.cache.Cache;
 import javax.cache.configuration.CacheEntryListenerConfiguration;
 import javax.cache.configuration.CompleteConfiguration;
 import javax.cache.configuration.Configuration;
 import javax.cache.configuration.MutableConfiguration;
-import javax.cache.expiry.CreatedExpiryPolicy;
-import javax.cache.expiry.Duration;
-import javax.cache.expiry.EternalExpiryPolicy;
-import javax.cache.expiry.ExpiryPolicy;
-import javax.cache.expiry.ModifiedExpiryPolicy;
+import javax.cache.expiry.*;
 import javax.cache.integration.CacheLoader;
 import javax.cache.integration.CacheLoaderException;
 import java.io.Closeable;
@@ -106,7 +98,7 @@ public class JCacheBuilder<K, V> {
     }
     if (cache2kConfiguration == null) {
       cache2kConfiguration =
-        CacheManagerImpl.PROVIDER.getDefaultConfiguration(manager.getCache2kManager());
+              Cache2kCoreProviderFactory.getProvider().getDefaultConfiguration(manager.getCache2kManager());
       if (cfg instanceof ExtendedMutableConfiguration) {
         ((ExtendedMutableConfiguration) cfg).setCache2kConfiguration(cache2kConfiguration);
       }
